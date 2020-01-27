@@ -5,6 +5,8 @@ import math
 import numpy as np
 # plotting the measurement data
 
+pd.set_option('precision', 10)
+
 
 def plot_measurements():
     df = pd.read_csv('./data/measurements.csv',
@@ -80,11 +82,6 @@ def calc_least_square():
                        usecols=[0, 1, 2, 3], header=None, index_col=None)
     df_gt = pd.read_csv('./data/groundtruth.csv',
                         usecols=[0, 1, 2, 3], header=None, index_col=None)
-
-    # e = df_gt.subtract(df_m).pow(2)
-    # e = e[0] + e[1] + e[2]
-    # e = e.sum(axis=0, skipna=True)
-    # print(e)
     m_list = df_m.to_numpy()
     gr_list = df_gt.to_numpy()
     m_list_tp = np.transpose(m_list)
@@ -97,10 +94,25 @@ def calc_least_square():
     df_estimated.to_csv("./data/estimated.csv", index=False, header=False)
 
 
+def sum_of_square():
+    df_e = pd.read_csv('./data/estimated.csv',
+                       usecols=[0, 1, 2, 3], header=None, index_col=None)
+    df_gt = pd.read_csv('./data/groundtruth.csv',
+                        usecols=[0, 1, 2, 3], header=None, index_col=None)
+    e = df_gt.subtract(df_e).pow(2)
+    e = e[0] + e[1] + e[2]
+    e = e.sum(axis=0, skipna=True)
+    print(e)
+
+
 def main():
+    # uncomment the line you need
+
     # plot_together()
-    # calc_least_square()
-    plot_together()
+
+    calc_least_square()
+
+    # sum_of_square()
 
 
 if __name__ == "__main__":
